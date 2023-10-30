@@ -1,0 +1,8 @@
+Mapillary: https://www.mapillary.com/dataset/trafficsign
+(Main one, uses multiple signs per picture, good to practice slightly wrong images)
+
+Kaggle simple dataset: https://www.kaggle.com/datasets/andrewmvd/road-sign-detection
+(229 MB, Stop signs, speed limits, crosswalk signs, and street lights) 
+
+Second kaggle set: https://www.kaggle.com/datasets/ahemateja19bec1025/traffic-sign-dataset-classification/data
+199 MB
