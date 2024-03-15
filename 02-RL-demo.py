@@ -23,6 +23,7 @@
 
 import logging
 import time
+import random
 
 import nengo
 import numpy as np
@@ -70,65 +71,65 @@ class WorldConfig:
     curr_ind = -1
     world_maps = [
          """
-################
-#              #
-# ####    #### #
-# ####    #### #
-# ####    #### #
-#              #
-#--------------#
-#              #
-#              #
-# ####    #### #
-# ####    #### #
-# ####    #### #
-#              #
-################""",
+#################
+#               #
+# ####    ####  #
+# ####    ####  #
+# ####    ####  #
+#               #
+#-------------- #
+#               #
+#               #
+# ####    ####  #
+# ####    ####  #
+# ####    ####  #
+#               #
+#################""",
         """
-################
-#              #
-#              #
-#              #
-#     ####     #
-#              #
-#              #
-#    ####      #
-#              #
-#              #
-#   ####       #
-#              #
-#              #
-################""",
+#################
+#               #
+#               #
+#               #
+#     ####      #
+#               #
+#               #
+#    ####       #
+#               #
+#               #
+#   ####        #
+#               #
+#               #
+#################""",
         """
-################
-############## #
-############  ##
-###########  ###
-##########  ####
-#########  #####
-########  ######
-#######  #######
-######  ########
-#####  #########
-####  ##########
-###  ###########
-##  ############
-################""",
+#################
+##############  #
+############   ##
+###########   ###
+##########   ####
+#########   #####
+########   ######
+#######   #######
+######   ########
+#####   #########
+####   ##########
+###   ###########
+##   ############
+#################""",
         """
-################
-#              #
-#     ###      #
-#     ###      #
-#              #
-#              #
-#######  #######
-#              #
-#              #
-#     ###      #
-#     ###      #
-#     ###      #
-#              #
-################""",
+#################
+#               #
+#     ###       #
+#     ###       #
+#               #
+#               #
+#######   #######
+#               #
+#               #
+#     ###       #
+#     ###       #
+#     ###       #
+#               #
+#################""",
     ]
     init_pos = [(1, 3, 2), (1, 3, 2), (1, 1, 1), (1, 1, 1)]
 
@@ -210,8 +211,11 @@ with model:
         max_rotate = 10.0  # 10.0
         #attempting to add movement functions to make agen move forward and backward
         #my_world.agent.turn(rotation * dt * max_rotate)
-        my_world.agent.turn(rotation * dt * max_rotate)
-        success = my_world.agent.go_forward(speed * dt * max_speed)
+        my_world.agent.go_forward(speed * dt * max_speed)
+        #success = my_world.agent.go_forward(speed * dt * max_speed)
+        print()
+        success = my_world.agent.go_towards(str(random.randint(1, len(my_world.get_map().splitlines()[0]))),
+                                              str(random.randint(1, len(my_world.get_map().splitlines()))))
         #success = my_world.agent.turn_left()
         #if speed >= 0:
             #success = my_world.agent.go_backward(speed * dt * max_speed)
@@ -223,10 +227,12 @@ with model:
             #success = my_world.agent.go_forward(speed * dt * max_speed)  
             # Use -speed for backward
         if not success:
-            my_world.agent.color = "red"
+            my_world.agent.color = "pink"
+            my_world.reset_pos()
             return 0
         else:
             my_world.agent.color = "blue"
+            #my_world.reset_pos()
             return turn_bias + speed
 
     movement = nengo.Ensemble(n_neurons=100, dimensions=2, radius=1.4)
@@ -295,7 +301,7 @@ with model:
             self.my_world = my_world
             self.page = page_data
 
-            self._is_learning = 1
+            self._is_learning = 2
             # _is_learning values:
             # < 0: no learning
             # 1: learning, will stop at learn_timeout
