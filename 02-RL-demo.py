@@ -52,7 +52,9 @@ class Cell(GridCell):
     def color(self):
         if self.wall:
             return "black"
-        elif self.path:
+        elif self.destination:
+            global destination 
+            destination = [self.x, self.y]
             return "pink"
         else:
             return None
@@ -62,6 +64,8 @@ class Cell(GridCell):
             self.wall = True
         elif char == "-":
             self.path = True
+        elif char == "?":
+            self.destination = True
         else:
             self.wall = False
             self.path = False
@@ -75,7 +79,7 @@ class WorldConfig:
 #               #
 # ####    ####  #
 # ####    ####  #
-# ####    ####  #
+# ####  ? ####  #
 #               #
 #-------------- #
 #               #
@@ -204,18 +208,22 @@ with model:
 
     # Handle the movement of the agent, and generate the movement
     # "goodness" grade
+    
     def move(t, x, my_world=world_cfg):
         speed, rotation = x
         dt = 0.001
         max_speed = 10.0  # 10.0
         max_rotate = 10.0  # 10.0
         #attempting to add movement functions to make agen move forward and backward
-        #my_world.agent.turn(rotation * dt * max_rotate)
+        my_world.agent.turn(rotation * dt * max_rotate)
         my_world.agent.go_forward(speed * dt * max_speed)
-        #success = my_world.agent.go_forward(speed * dt * max_speed)
-        print()
-        success = my_world.agent.go_towards(str(random.randint(1, len(my_world.get_map().splitlines()[0]))),
-                                              str(random.randint(1, len(my_world.get_map().splitlines()))))
+        can_go_forward = my_world.agent.go_forward(speed * dt * max_speed)
+        #success = my_world.agent.go_towards("14", "1")
+        #print(destination)
+        #success = my_world.agent.go_towards(str(random.randint(1, len(my_world.get_map().splitlines()[1]))), str(random.randint(1, len(my_world.get_map().splitlines())-1)))
+        success = my_world.agent.in_destination(destination)
+        if success:
+            my_world.reset_pos()
         #success = my_world.agent.turn_left()
         #if speed >= 0:
             #success = my_world.agent.go_backward(speed * dt * max_speed)
@@ -226,9 +234,9 @@ with model:
             #my_world.agent.go_forward(speed * dt * max_speed) 
             #success = my_world.agent.go_forward(speed * dt * max_speed)  
             # Use -speed for backward
-        if not success:
+        if not can_go_forward:
             my_world.agent.color = "pink"
-            my_world.reset_pos()
+            #my_world.reset_pos()
             return 0
         else:
             my_world.agent.color = "blue"

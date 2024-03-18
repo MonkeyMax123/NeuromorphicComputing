@@ -9,6 +9,7 @@ neighbour_synonyms = ("neighbours", "neighbors", "neighbour", "neighbor")
 class Cell:
     wall = False
     path = False
+    destination = False
 
     def __getattr__(self, key):
         if key in neighbour_synonyms:
@@ -26,6 +27,7 @@ class Cell:
 class Agent:
     world = None
     cell = None
+    #destination = [14, 1]
 
     def __setattr__(self, key, val):
         if key == "cell":
@@ -45,6 +47,12 @@ class Agent:
             return self.get_cell_ahead()
         raise AttributeError(key)
 
+    def in_destination(self, desination):
+        if self.x >= desination[0] and self.x < desination[0] + 1 and self.y >= desination[1] and self.y < desination[1] + 1:
+            return True
+        else:
+            return False
+    
     def turn(self, amount):
         self.dir = (self.dir + amount) % self.world.directions
 
@@ -86,6 +94,7 @@ class Agent:
 
     def go_towards(self, target, y=None):
         if not isinstance(target, Cell):
+            
             target = self.world.grid[int(y)][int(target)]
         if self.world is None:
             raise CellularException("Agent has not been put in a World")
