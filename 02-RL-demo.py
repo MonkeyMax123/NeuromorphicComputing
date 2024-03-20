@@ -62,13 +62,11 @@ class Cell(GridCell):
     def load(self, char):
         if char == "#":
             self.wall = True
-        elif char == "-":
-            self.path = True
         elif char == "?":
             self.destination = True
         else:
             self.wall = False
-            self.path = False
+            self.destination= False
 
 
 class WorldConfig:
