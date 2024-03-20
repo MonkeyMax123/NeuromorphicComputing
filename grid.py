@@ -8,7 +8,6 @@ neighbour_synonyms = ("neighbours", "neighbors", "neighbour", "neighbor")
 
 class Cell:
     wall = False
-    path = False
     destination = False
 
     def __getattr__(self, key):
